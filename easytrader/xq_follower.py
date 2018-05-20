@@ -169,6 +169,13 @@ class XueQiuFollower(BaseFollower):
                 t['amount'] = self._adjust_sell_amount(t['stock_code'],
                                                        t['amount'])
 
+            t['weight'] = self._adjust_weight(weight_diff)
+    def _adjust_weight(self, weight):
+        if abs(weight) >= 80:
+            weight = 100
+        else:
+            weight = 0.
+
     def _adjust_sell_amount(self, stock_code, amount):
         """
         根据实际持仓值计算雪球卖出股数

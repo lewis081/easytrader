@@ -10,6 +10,7 @@ import pywinauto.clipboard
 
 from . import helpers
 from .clienttrader import ClientTrader
+import easyutils
 
 
 class GJClientTrader(ClientTrader):
@@ -72,3 +73,52 @@ class GJClientTrader(ClientTrader):
         time.sleep(0.2)
         vcode = helpers.recognize_verify_code(file_path, 'gj_client')
         return ''.join(re.findall('[a-zA-Z0-9]+', vcode))
+
+    def buy(self, security, price, amount, **kwargs):
+        weight = kwargs['weight']
+        if weight == 0:
+            print ('weight is 0, we will not buy anything')
+        else:
+            price = self._adjust_buy_price(security, price)#less than 3 point
+            total_asset = self.balance()[0]['资金余额']#need test
+            amount = int(total_asset/price)/100*100#need test
+
+            self._switch_left_menus(['买入[F1]'])
+
+            return self.trade(security, price, amount)
+
+    def _adjust_buy_price(self, security, price):
+        price_preset    = price * (1+0.15)
+        price_up_stop = self._get_stock_up_stop_price(security)
+
+        price_min = min(price_preset, price_up_stop)
+
+        return easyutils.round_price_by_code(price_min, security)
+
+    def _get_stock_up_stop_price(self, security):
+        pass
+
+
+    def sell(self, security, price, amount, **kwargs):
+        weight = kwargs['weight']
+        if weight == 0:
+            print ('weight is 0, we will not sell anything')
+        else:
+            price  = self._adjust_sell_price(security, price)
+            amount = self.position[0]['当前持仓']
+
+            self._switch_left_menus(['卖出[F2]'])
+
+            return self.trade(security, price, amount)
+
+
+    def _adjust_sell_price(self, security, price):
+        price_preset    = price * (1-0.15)
+        price_down_stop = self._get_stock_down_stop_price(security)
+
+        price_max = max(price_preset, price_down_stop)
+
+        return easyutils.round_price_by_code(price_max, security)
+
+    def _get_stock_down_stop_price(self, security):
+        pass

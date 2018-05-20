@@ -173,15 +173,16 @@ class BaseFollower(object):
                     'stock_code': t['stock_code'],
                     'amount': t['amount'],
                     'price': t['price'],
-                    'datetime': t['datetime']
+                    'datetime': t['datetime'],
+                    'weight': t['weight']
                 }
                 if self.is_cmd_expired(trade_cmd):
                     continue
                 log.info(
-                    '策略 [{}] 发送指令到交易队列, 股票: {} 动作: {} 数量: {} 价格: {} 信号产生时间: {}'.
+                    '策略 [{}] 发送指令到交易队列, 股票: {} 动作: {} 数量: {} 价格: {} 信号产生时间: {} 权重: {}'.
                     format(name, trade_cmd['stock_code'], trade_cmd['action'],
                            trade_cmd['amount'], trade_cmd['price'],
-                           trade_cmd['datetime']))
+                           trade_cmd['datetime'], trade_cmd['weight']))
                 self.trade_queue.put(trade_cmd)
                 self.add_cmd_to_expired_cmds(trade_cmd)
             try:
@@ -262,6 +263,7 @@ class BaseFollower(object):
                 'security': trade_cmd['stock_code'],
                 'price': trade_cmd['price'],
                 'amount': trade_cmd['amount'],
+                'weight': trade_cmd['weight'],
                 'entrust_prop': entrust_prop
             }
             try:
