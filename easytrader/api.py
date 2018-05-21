@@ -2,11 +2,13 @@
 import logging
 import six
 
-from .joinquant_follower import JoinQuantFollower
-from .log import log
-from .ricequant_follower import RiceQuantFollower
-from .xq_follower import XueQiuFollower
-from .xqtrader import XueQiuTrader
+from .joinquant_follower    import JoinQuantFollower
+from .log                   import log
+from .ricequant_follower    import RiceQuantFollower
+from .xq_follower           import XueQiuFollower
+from .xqtrader              import XueQiuTrader
+
+from .Xueqiu import XueQiu
 
 if six.PY2:
     raise TypeError('不支持 Python2，请升级 Python3 ')
@@ -67,3 +69,7 @@ def follower(platform, **kwargs):
         return JoinQuantFollower()
     if platform.lower() in ['xq', 'xueqiu', '雪球']:
         return XueQiuFollower(**kwargs)
+
+
+def CreateXueqiuVisitor():
+    return XueQiu()

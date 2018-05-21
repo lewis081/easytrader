@@ -41,7 +41,7 @@ class XueQiuFollower(BaseFollower):
         cookie_dict = helpers.parse_cookies_str(cookies)
         self.s.cookies.update(cookie_dict)
 
-        log.info('登录成功')
+        log.info('登录成功1')
 
     def follow(self,
                users,

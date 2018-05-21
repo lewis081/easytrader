@@ -12,11 +12,16 @@ from . import helpers
 from .clienttrader import ClientTrader
 import easyutils
 
+from . import Xueqiu
+
 
 class GJClientTrader(ClientTrader):
     @property
     def broker_type(self):
         return 'gj'
+
+    def setXueqiu(self, xq):
+        self.xq = xq
 
     def login(self, user, password, exe_path, comm_password=None, **kwargs):
         """
@@ -75,6 +80,7 @@ class GJClientTrader(ClientTrader):
         return ''.join(re.findall('[a-zA-Z0-9]+', vcode))
 
     def buy(self, security, price, amount, **kwargs):
+        print('Lewis Buy function')
         weight = kwargs['weight']
         if weight == 0:
             print ('weight is 0, we will not buy anything')
@@ -96,10 +102,12 @@ class GJClientTrader(ClientTrader):
         return easyutils.round_price_by_code(price_min, security)
 
     def _get_stock_up_stop_price(self, security):
-        pass
+        return xq._get_stock_rise_stop_price(security)
+        
 
 
     def sell(self, security, price, amount, **kwargs):
+        print('Lewis Sell function')
         weight = kwargs['weight']
         if weight == 0:
             print ('weight is 0, we will not sell anything')
@@ -121,4 +129,4 @@ class GJClientTrader(ClientTrader):
         return easyutils.round_price_by_code(price_max, security)
 
     def _get_stock_down_stop_price(self, security):
-        pass
+        return xq._get_stock_fall_stop_price(security)
