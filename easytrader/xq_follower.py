@@ -172,9 +172,9 @@ class XueQiuFollower(BaseFollower):
             t['weight'] = self._adjust_weight(weight_diff)
     def _adjust_weight(self, weight):
         if abs(weight) >= 80:
-            weight = 100
+            return 100
         else:
-            weight = 0.
+            return 0
 
     def _adjust_sell_amount(self, stock_code, amount):
         """
