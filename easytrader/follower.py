@@ -30,6 +30,9 @@ class BaseFollower(object):
 
         self.s = requests.Session()
 
+    def getQueue(self):
+        return self.trade_queue
+
     def login(self, user=None, password=None, **kwargs):
         """
         登陆接口

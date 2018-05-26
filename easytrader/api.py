@@ -9,6 +9,7 @@ from .xq_follower           import XueQiuFollower
 from .xqtrader              import XueQiuTrader
 
 from .Xueqiu import XueQiu
+from .trader_bridge import TraderBridge
 
 if six.PY2:
     raise TypeError('不支持 Python2，请升级 Python3 ')
@@ -73,3 +74,4 @@ def follower(platform, **kwargs):
 
 def CreateXueqiuVisitor():
     return XueQiu()
+

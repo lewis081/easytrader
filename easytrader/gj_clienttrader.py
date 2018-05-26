@@ -102,7 +102,7 @@ class GJClientTrader(ClientTrader):
         return easyutils.round_price_by_code(price_min, security)
 
     def _get_stock_up_stop_price(self, security):
-        return xq._get_stock_rise_stop_price(security)
+        return self.xq._get_stock_rise_stop_price(security)
         
 
 
@@ -129,4 +129,4 @@ class GJClientTrader(ClientTrader):
         return easyutils.round_price_by_code(price_max, security)
 
     def _get_stock_down_stop_price(self, security):
-        return xq._get_stock_fall_stop_price(security)
+        return self.xq._get_stock_fall_stop_price(security)

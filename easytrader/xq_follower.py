@@ -19,8 +19,10 @@ class XueQiuFollower(BaseFollower):
     PORTFOLIO_URL = 'https://xueqiu.com/p/'
     WEB_REFERER = 'https://www.xueqiu.com'
 
+
     def __init__(self):
         super(XueQiuFollower, self).__init__()
+        self.history1 = 0
 
     def login(self, user=None, password=None, **kwargs):
         """
@@ -73,8 +75,8 @@ class XueQiuFollower(BaseFollower):
         """
         self._adjust_sell = adjust_sell
 
-        users = self.warp_list(users)
-        self._users = users
+        # users = self.warp_list(users)
+        # self._users = users
 
         strategies = self.warp_list(strategies)
         total_assets = self.warp_list(total_assets)
@@ -83,7 +85,7 @@ class XueQiuFollower(BaseFollower):
         if cmd_cache:
             self.load_expired_cmd_cache()
 
-        self.start_trader_thread(users, trade_cmd_expire_seconds)
+        # self.start_trader_thread(users, trade_cmd_expire_seconds)
 
         for strategy_url, strategy_total_assets, strategy_initial_assets in zip(
                 strategies, total_assets, initial_assets):
@@ -131,7 +133,13 @@ class XueQiuFollower(BaseFollower):
         return rep.json()[info_index]['name']
 
     def extract_transactions(self, history):
-        print(history)
+        if self.history1 != history['list'][0]['updated_at']:
+            print(history)
+            self.history1 = history['list'][0]['updated_at']
+            print('not the same to before')
+        else:
+            print('the same to before')
+
         if history['count'] <= 0:
             return []
         rebalancing_index = 0
