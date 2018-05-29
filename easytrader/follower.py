@@ -1,6 +1,7 @@
 # coding:utf8
 from __future__ import unicode_literals, print_function, division
 
+import codecs
 import os
 import pickle
 import re
@@ -16,11 +17,14 @@ from . import exceptions
 from .log import log
 
 
+
+
 class BaseFollower(object):
     LOGIN_PAGE = ''
     LOGIN_API = ''
     TRANSACTION_API = ''
-    CMD_CACHE_FILE = 'cmd_cache.pk'
+    CMD_CACHE_FILE = 'gen/cmd_cache.pk'
+    ADJUST_RECORD_FILE = 'gen/adjust_record.txt'
     WEB_REFERER = ''
     WEB_ORIGIN = ''
 
@@ -177,15 +181,27 @@ class BaseFollower(object):
                     'amount': t['amount'],
                     'price': t['price'],
                     'datetime': t['datetime'],
-                    'weight': t['weight']
+                    'delta_weight': t['delta_weight'],
+                    'cur_weight': t['cur_weight'],
+                    'pre_weight': t['pre_weight']
                 }
                 if self.is_cmd_expired(trade_cmd):
                     continue
                 log.info(
-                    '策略 [{}] 发送指令到交易队列, 股票: {} 动作: {} 数量: {} 价格: {} 信号产生时间: {} 权重: {}'.
+                    '策略 [{}] 发送指令到交易队列, 股票: {} 动作: {} 数量: {} 价格: {} 信号产生时间: {} delta_weight: {} pre_weight: {} -> cur_weight: {}'.
                     format(name, trade_cmd['stock_code'], trade_cmd['action'],
                            trade_cmd['amount'], trade_cmd['price'],
-                           trade_cmd['datetime'], trade_cmd['weight']))
+                           trade_cmd['datetime'], 
+                           trade_cmd['delta_weight'], trade_cmd['pre_weight'], trade_cmd['cur_weight']))
+
+                with codecs.open(self.ADJUST_RECORD_FILE, 'a+', 'utf-8') as f:
+                    f.write('follow_time: {}. 信号产生时间: {} delta_weight: {} pre_weight: {} -> cur_weight: {}. 策略 [{}] 发送指令到交易队列, 股票: {} 动作: {} 价格: {}  \n'.
+                    format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        trade_cmd['datetime'], 
+                        trade_cmd['delta_weight'], trade_cmd['pre_weight'], trade_cmd['cur_weight'],
+                        name, trade_cmd['stock_code'], trade_cmd['action'],
+                        trade_cmd['price']
+                        ))
                 self.trade_queue.put(trade_cmd)
                 self.add_cmd_to_expired_cmds(trade_cmd)
             try:

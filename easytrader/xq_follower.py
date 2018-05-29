@@ -11,6 +11,34 @@ from . import helpers
 from .follower import BaseFollower
 from .log import log
 
+def mkdir(path):
+    # 引入模块
+    import os
+ 
+    # 去除首位空格
+    path=path.strip()
+    # 去除尾部 \ 符号
+    path=path.rstrip("\\")
+ 
+    # 判断路径是否存在
+    # 存在     True
+    # 不存在   False
+    isExists=os.path.exists(path)
+ 
+    # 判断结果
+    if not isExists:
+        # 如果不存在则创建目录
+        # 创建目录操作函数
+        os.makedirs(path) 
+ 
+        print (path+'创建成功')
+        return True
+    else:
+        # 如果目录存在则不创建，并提示目录已存在
+        print (path+'目录已存在')
+        return False
+
+
 
 class XueQiuFollower(BaseFollower):
     LOGIN_PAGE = 'https://www.xueqiu.com'
@@ -23,6 +51,8 @@ class XueQiuFollower(BaseFollower):
     def __init__(self):
         super(XueQiuFollower, self).__init__()
         self.history1 = 0
+
+        mkdir('gen')
 
     def login(self, user=None, password=None, **kwargs):
         """
@@ -136,9 +166,9 @@ class XueQiuFollower(BaseFollower):
         if self.history1 != history['list'][0]['updated_at']:
             print(history)
             self.history1 = history['list'][0]['updated_at']
-            print('not the same to before')
+            print(datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ': not the same as before')
         else:
-            print('the same to before')
+            print(datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ': the same as before')
 
         if history['count'] <= 0:
             return []
@@ -163,6 +193,9 @@ class XueQiuFollower(BaseFollower):
         for t in transactions:
             weight_diff = self.none_to_zero(t['weight']) - self.none_to_zero(
                 t['prev_weight'])
+            t['cur_weight'] = self.none_to_zero(t['weight'])
+            t['pre_weight'] = self.none_to_zero(t['prev_weight'])
+            t['delta_weight'] = self._adjust_weight(weight_diff)
 
             initial_amount = abs(weight_diff) / 100 * assets / t['price']
 
@@ -177,7 +210,7 @@ class XueQiuFollower(BaseFollower):
                 t['amount'] = self._adjust_sell_amount(t['stock_code'],
                                                        t['amount'])
 
-            t['weight'] = self._adjust_weight(weight_diff)
+            
     def _adjust_weight(self, weight):
         if abs(weight) >= 80:
             return 100
