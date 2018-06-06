@@ -79,7 +79,9 @@ class XueQiu(object):
         # print(data)
 
         security_upper = security.upper()
-        return data[security_upper]['rise_stop']
+        # print('ly: ', data[security_upper]['rise_stop'])
+        # print('ly2: ', float(data[security_upper]['rise_stop']))
+        return float(data[security_upper]['rise_stop'])
 
     def _get_stock_fall_stop_price(self, security):
         url = self.STOCK_INFO.format(security)
@@ -87,4 +89,4 @@ class XueQiu(object):
         data = res.json()
 
         security_upper = security.upper()
-        return data[security_upper]['fall_stop']
+        return float(data[security_upper]['fall_stop'])

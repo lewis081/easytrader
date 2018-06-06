@@ -86,6 +86,7 @@ class GJClientTrader(ClientTrader):
             print ('weight is 0, we will not buy anything')
         else:
             price = self._adjust_buy_price(security, price)#less than 3 point
+            # print('final: ', price)
             total_asset = self.balance()[0]['资金余额']#need test
             amount = int(total_asset/price)/100*100#need test
 
@@ -94,10 +95,12 @@ class GJClientTrader(ClientTrader):
             return self.trade(security, price, amount)
 
     def _adjust_buy_price(self, security, price):
-        price_preset    = price * (1+0.15)
+        price_preset    = price * (1+0.03)
         price_up_stop = self._get_stock_up_stop_price(security)
 
         price_min = min(price_preset, price_up_stop)
+        # print('price_preset: ', price_preset)
+        # print('price_up_stop: ', price_up_stop)
 
         return easyutils.round_price_by_code(price_min, security)
 
