@@ -119,7 +119,7 @@ class GJClientTrader(ClientTrader):
             print ('weight is 0, we will not sell anything')
         else:
             price  = self._adjust_sell_price(security, price)
-            amount = self.position[0]['当前持仓']
+            amount = self.position[0]['可用余额']
 
             self._switch_left_menus(['卖出[F2]'])
 
@@ -127,7 +127,7 @@ class GJClientTrader(ClientTrader):
 
 
     def _adjust_sell_price(self, security, price):
-        price_preset    = price * (1-0.15)
+        price_preset    = price * (1-0.03)
         price_down_stop = self._get_stock_down_stop_price(security)
 
         price_max = max(price_preset, price_down_stop)
