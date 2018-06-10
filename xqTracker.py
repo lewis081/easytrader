@@ -14,6 +14,7 @@ user = easytrader.use('gj_client')
 user.setXueqiu(xq)
 user.login('40095305', '764241', "C:\\全能行证券交易终端\\xiadan.exe")
 
+
 # create follower
 xq_follower = easytrader.follower('xq')
 xq_follower.login(cookies=cookies1)

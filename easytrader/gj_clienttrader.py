@@ -81,13 +81,14 @@ class GJClientTrader(ClientTrader):
 
     def buy(self, security, price, amount, **kwargs):
         print('Lewis Buy function')
+        
         weight = kwargs['weight']
         if weight == 0:
             print ('weight is 0, we will not buy anything')
         else:
             price = self._adjust_buy_price(security, price)#less than 3 point
-            # print('final: ', price)
-            total_asset = self.balance()[0]['资金余额']#need test
+            print('final: ', price, 'security', security)
+            total_asset = self.balance['资金余额']#need test
             amount = int(total_asset/price)/100*100#need test
 
             self._switch_left_menus(['买入[F1]'])
@@ -102,7 +103,9 @@ class GJClientTrader(ClientTrader):
         # print('price_preset: ', price_preset)
         # print('price_up_stop: ', price_up_stop)
 
-        return easyutils.round_price_by_code(price_min, security)
+        code = security[-6:]
+
+        return float(easyutils.round_price_by_code(price_min, code))
 
     def _get_stock_up_stop_price(self, security):
         return self.xq._get_stock_rise_stop_price(security)
@@ -129,7 +132,9 @@ class GJClientTrader(ClientTrader):
 
         price_max = max(price_preset, price_down_stop)
 
-        return easyutils.round_price_by_code(price_max, security)
+        code = security[-6:]
+
+        return float(easyutils.round_price_by_code(price_max, code))
 
     def _get_stock_down_stop_price(self, security):
         return self.xq._get_stock_fall_stop_price(security)
